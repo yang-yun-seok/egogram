@@ -1,0 +1,462 @@
+import React, { useState, useEffect } from 'react';
+import { Camera, ArrowRight, RotateCcw, Check, Users, Sparkles, Brain, Scale, Heart, ShieldAlert, MessageCircle, Zap, Puzzle } from 'lucide-react';
+
+// --- 데이터 정의 (총 30문항으로 확장 및 혼합 배치) ---
+const QUESTIONS = [
+  { id: 1, text: "회의 시간에 누군가 지각하면 '시간 약속은 기본인데...' 라고 속으로 생각한다.", category: "CP" },
+  { id: 2, text: "팀원이 업무로 힘들어 보이면, 내 일을 조금 미루더라도 기꺼이 도와주고 싶다.", category: "NP" },
+  { id: 3, text: "문제를 해결할 때 직감이나 감정보다는 '팩트'와 '데이터'를 먼저 확인한다.", category: "A" },
+  { id: 4, text: "가끔 엉뚱하더라도 새롭고 기발한 아이디어를 던지는 것을 좋아한다.", category: "FC" },
+  { id: 5, text: "내 의견이 있더라도, 다수의 의견이 다르면 굳이 반대하지 않고 보통 따르는 편이다.", category: "AC" },
+  
+  { id: 6, text: "팀 프로젝트의 규칙, R&R(역할), 기한이 명확하지 않으면 큰 스트레스를 받는다.", category: "CP" },
+  { id: 7, text: "회의 때 의견을 내지 못하고 조용한 팀원에게 'ㅇㅇ님 생각은 어때요?'라고 자주 묻는다.", category: "NP" },
+  { id: 8, text: "잡담으로 회의가 길어지면, 빨리 요점을 정리해서 결론을 내고 싶어 안달이 난다.", category: "A" },
+  { id: 9, text: "딱딱한 회의실보다는 농담이 오가는 자유로운 분위기에서 아이디어가 훨씬 잘 나온다.", category: "FC" },
+  { id: 10, text: "팀원과 얼굴 붉히며 갈등을 겪느니, 차라리 내가 조금 손해 보더라도 참는 게 편하다.", category: "AC" },
+
+  { id: 11, text: "정해진 규칙이나 프로세스를 무시하고 자기 맘대로 일하는 사람을 보면 화가 난다.", category: "CP" },
+  { id: 12, text: "팀 분위기가 가라앉아 있으면 내가 분위기를 띄우거나 간식을 사오곤 한다.", category: "NP" },
+  { id: 13, text: "어떤 주장을 할 때, 객관적인 근거나 레퍼런스가 없으면 전혀 설득력이 없다고 생각한다.", category: "A" },
+  { id: 14, text: "새로운 툴이나 방식을 시도해 보는 것을 즐기며, 반복되는 단순 작업은 금방 지루해한다.", category: "FC" },
+  { id: 15, text: "내 의견이 맞다고 생각하더라도, 팀장이나 다수가 강하게 밀어붙이면 결국 수긍한다.", category: "AC" },
+
+  { id: 16, text: "팀원들의 결과물 퀄리티가 내 기준에 미치지 못하면 어떻게든 피드백을 해서 고치게 만든다.", category: "CP" },
+  { id: 17, text: "동료가 실수를 해도 질책하기보다는 '그럴 수 있지, 다음에 잘하면 돼'라고 위로하는 편이다.", category: "NP" },
+  { id: 18, text: "감정적인 호소나 열정보다는, 논리적인 인과관계가 명확한 설명에 마음이 움직인다.", category: "A" },
+  { id: 19, text: "남들이 생각하지 못한 독특한 시각으로 문제에 접근한다는 이야기를 종종 듣는다.", category: "FC" },
+  { id: 20, text: "회의 중 누군가와 의견이 강하게 충돌할 것 같으면, 말을 아끼고 상황을 지켜보는 편이다.", category: "AC" },
+
+  // --- 추가된 10문항 ---
+  { id: 21, text: "프로젝트 문서의 폰트 크기나 줄맞춤이 어긋난 것을 보면 나도 모르게 거슬린다.", category: "CP" },
+  { id: 22, text: "새로 합류한 팀원이 적응을 못 하는 것 같으면 먼저 다가가 밥이나 커피를 사준다.", category: "NP" },
+  { id: 23, text: "회의록이나 정리된 문서 없이 말로만 진행되는 업무 지시는 매우 불안하고 싫다.", category: "A" },
+  { id: 24, text: "회의 중 갑자기 좋은 아이디어가 떠오르면 남의 말이 끝나기 전에 끼어들어 말할 때가 있다.", category: "FC" },
+  { id: 25, text: "불만이 있어도 팀의 분위기를 망칠까 봐 혼자 삭히고 둥글게 넘어가는 경우가 꽤 있다.", category: "AC" },
+
+  { id: 26, text: "누군가 농담을 길게 섞어가며 보고하면 '그래서 결론이 뭔데?' 라는 생각이 든다.", category: "CP" },
+  { id: 27, text: "누군가 칭찬받거나 성과를 내면 내 일처럼 진심으로 기쁘고 박수를 쳐준다.", category: "NP" },
+  { id: 28, text: "어떤 결정을 내릴 때 직감에 의존하기보단, 장단점을 리스트업해서 철저히 비교해 본다.", category: "A" },
+  { id: 29, text: "가끔은 목적지나 빡빡한 계획 없이 발길 닿는 대로 팀원들과 회식을 가거나 노는 게 재밌다.", category: "FC" },
+  { id: 30, text: "누군가 나에게 서운한 소리를 하면 겉으론 웃어넘겨도 하루 종일 그 생각에 빠지곤 한다.", category: "AC" }
+];
+
+const ANSWERS = [
+  { text: "전혀 아니다", score: 1 },
+  { text: "아니다", score: 2 },
+  { text: "보통이다", score: 3 },
+  { text: "그렇다", score: 4 },
+  { text: "매우 그렇다", score: 5 },
+];
+
+const RESULTS = {
+  CP: {
+    title: "팀의 든든한 가드레일, 칼각 원칙주의자",
+    icon: <Scale className="w-12 h-12 text-red-500" />,
+    color: "bg-red-500",
+    pblRole: "팀장 / 일정 및 품질 관리",
+    description: "기준 제시와 규칙 준수를 중시하는 책임감 있는 리더형입니다. 목표와 일정이 명확할 때 가장 큰 시너지를 내며 프로젝트의 품질을 꼼꼼하게 관리합니다.",
+    caution: "때로는 비판적이거나 강압적으로 보일 수 있어요. (⚠️ 같은 CP만 모이면 주도권 다툼이 일어날 수 있으니 주의!)",
+    catchphrase: "이거 데드라인이 언제까지죠?",
+    bestMatch: "A", // 냉철한 팩트폭격기
+    badMatch: "FC", // 자유로운 아이디어 뱅크
+    tip: [
+      "업무 요청 시 기한(Due Date)과 배경을 명확히 적어주세요.",
+      "모호한 표현('적당히', '알아서')보다는 구체적인 수치나 가이드라인을 선호해요.",
+      "제 피드백은 사람을 향한 공격이 아니라 '더 나은 결과물'을 위한 고민입니다. 상처받지 마세요!"
+    ]
+  },
+  NP: {
+    title: "팀의 힐링 포션, 다정다감 케어러",
+    icon: <Heart className="w-12 h-12 text-pink-500" />,
+    color: "bg-pink-500",
+    pblRole: "분위기 조율 / 갈등 완화 / 발표자",
+    description: "팀원을 배려하고 갈등을 완화하는 공감 능력자입니다. 팀의 분위기를 긍정적으로 이끌고 원활한 소통을 지원하는 데 탁월합니다.",
+    caution: "팀원들에게 지나치게 맞춰주다 보면 결정이 늦어질 수 있어요. (⚠️ 같은 NP만 모이면 결정력이 부족해질 수 있어요!)",
+    catchphrase: "많이 힘들죠? 제가 뭐 좀 도와드릴까요?",
+    bestMatch: "FC", // 자유로운 아이디어 뱅크
+    badMatch: "A",  // 냉철한 팩트폭격기
+    tip: [
+      "본론으로 들어가기 전, '주말 잘 보내셨어요?' 같은 가벼운 스몰토크가 큰 힘이 돼요.",
+      "팀원 간의 차가운 피드백이 오갈 때 스트레스를 받습니다. 둥글게 말하는 쿠션어를 사용해 주세요.",
+      "제가 도와준 일에 대해 진심 어린 '고마워요!' 한마디면 밤샘 작업도 거뜬합니다."
+    ]
+  },
+  A: {
+    title: "팀의 네비게이션, 냉철한 팩트폭격기",
+    icon: <Brain className="w-12 h-12 text-blue-500" />,
+    color: "bg-blue-500",
+    pblRole: "자료 조사 및 분석 / 논리적 판단 / 기획",
+    description: "자료 분석과 논리적 판단을 통해 계획을 수립하는 브레인입니다. 감정에 휩쓸리지 않고 객관적 근거를 바탕으로 해결책을 제시합니다.",
+    caution: "팩트 위주라 감정적인 소통이 다소 부족해 보일 수 있어요. (⚠️ 같은 A만 모이면 활동성이 낮고 분위기가 너무 딱딱해질 수 있어요!)",
+    catchphrase: "그 주장을 뒷받침할 데이터가 있나요?",
+    bestMatch: "CP", // 칼각 원칙주의자
+    badMatch: "NP",  // 다정다감 케어러
+    tip: [
+      "문제 상황을 공유할 때는 '감정'보다 '사실(What, Why, How)' 위주로 정리해서 말씀해 주세요.",
+      "뒷받침할 데이터나 레퍼런스를 가져와 주시면 빠르게 설득됩니다.",
+      "회의는 목적과 아젠다가 명확할 때 가장 즐겁습니다. 의식의 흐름대로 진행되는 회의는 지쳐요."
+    ]
+  },
+  FC: {
+    title: "팀의 스파크, 자유로운 아이디어 뱅크",
+    icon: <Sparkles className="w-12 h-12 text-yellow-500" />,
+    color: "bg-yellow-500",
+    pblRole: "아이디어 제안 / 창의적 시도 / 발표",
+    description: "자유롭게 아이디어를 제안하고 창의적인 시도를 즐기는 분위기 메이커입니다. 엉뚱하지만 기발한 발상으로 팀에 강력한 활력을 불어넣습니다.",
+    caution: "다소 산만해 보이거나 일의 마무리가 약할 수 있어요. (⚠️ 같은 FC만 모이면 아이디어는 넘치지만 결과물이 안 나올 수 있어요!)",
+    catchphrase: "아! 갑자기 재밌는 생각 났어요!",
+    bestMatch: "NP", // 다정다감 케어러
+    badMatch: "CP",  // 칼각 원칙주의자
+    tip: [
+      "엉뚱한 아이디어라도 '오, 재밌겠는데요?'라며 리액션해 주시면 더 좋은 아이디어가 폭발해요.",
+      "너무 빡빡한 마이크로 매니징보다는, 큰 방향성만 주고 자율적으로 일할 수 있게 맡겨주세요.",
+      "칭찬과 인정은 저의 원동력입니다! 공개적인 칭찬은 저를 춤추게 합니다."
+    ]
+  },
+  AC: {
+    title: "팀의 윤활유, 평화주의자 조율러",
+    icon: <Users className="w-12 h-12 text-green-500" />,
+    color: "bg-green-500",
+    pblRole: "자료 정리 / 지시 이행 / 안정적 지원",
+    description: "타인을 배려하며 지시를 잘 이행하는 든든한 조력자입니다. 눈에 띄게 나서지는 않지만, 안정적으로 참여하여 프로젝트가 부드럽게 굴러가게 합니다.",
+    caution: "너무 수동적이거나 자신의 의견 제시가 적을 수 있어요. (⚠️ 같은 AC만 모이면 서로 눈치만 보고 아이디어가 부족할 수 있어요!)",
+    catchphrase: "네, 저는 다 좋아요. 편하신 대로 맞춰주세요.",
+    bestMatch: "CP", // 칼각 원칙주의자
+    badMatch: "A",   // 냉철한 팩트폭격기
+    tip: [
+      "회의 때 제가 조용하다면, 듣고 정리하는 중일 확률이 높아요. 'ㅇㅇ님 생각은 어때요?'라고 부드럽게 짚어주세요.",
+      "누군가 혼자 책임을 다 떠안거나 소외되는 상황을 견디기 힘들어해요. 모두가 1인분을 하는 밸런스를 중시합니다.",
+      "의견이 충돌할 때, 강압적으로 밀어붙이기보다 '우리 이런 방향으로 타협해보면 어떨까요?'라며 제안해 주세요."
+    ]
+  }
+};
+
+export default function App() {
+  const [step, setStep] = useState('intro'); // intro, test, result
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [scores, setScores] = useState({ CP: 0, NP: 0, A: 0, FC: 0, AC: 0 });
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  useEffect(() => {
+    // 캡쳐 기능을 위한 html2canvas 스크립트 동적 로드
+    const script = document.createElement('script');
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    script.async = true;
+    document.body.appendChild(script);
+    
+    return () => {
+      document.body.removeChild(script);
+    }
+  }, []);
+
+  // --- 이벤트 핸들러 ---
+  const handleStart = () => {
+    setStep('test');
+    setScores({ CP: 0, NP: 0, A: 0, FC: 0, AC: 0 });
+    setCurrentQuestion(0);
+    setIsTransitioning(false);
+  };
+
+  const handleAnswer = (score) => {
+    if (isTransitioning) return; // 중복 클릭 방지
+    setIsTransitioning(true);
+
+    const category = QUESTIONS[currentQuestion].category;
+    setScores(prev => ({ ...prev, [category]: prev[category] + score }));
+
+    if (currentQuestion < QUESTIONS.length - 1) {
+      setTimeout(() => {
+        setCurrentQuestion(prev => prev + 1);
+        setIsTransitioning(false);
+      }, 150);
+    } else {
+      setTimeout(() => {
+        setStep('result');
+        setIsTransitioning(false);
+      }, 400);
+    }
+  };
+
+  const getPrimaryTrait = () => {
+    let maxTrait = 'CP';
+    let maxScore = -1;
+    for (const [trait, score] of Object.entries(scores)) {
+      if (score > maxScore) {
+        maxScore = score;
+        maxTrait = trait;
+      }
+    }
+    return maxTrait;
+  };
+
+  const handleCapture = async () => {
+    if (!window.html2canvas) {
+      alert("캡쳐 기능을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+    
+    const captureArea = document.getElementById('result-capture-area');
+    if (captureArea) {
+      setIsCapturing(true);
+      try {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        const canvas = await window.html2canvas(captureArea, {
+          scale: 2, 
+          backgroundColor: '#f3f4f6', // 약간의 배경색 추가로 캡쳐 퀄리티 업
+          windowWidth: captureArea.scrollWidth,
+        });
+        
+        const image = canvas.toDataURL("image/png");
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = `나의_팀워크_에고그램.png`;
+        link.click();
+      } catch (error) {
+        console.error("캡쳐 오류:", error);
+        alert("이미지 캡쳐에 실패했습니다.");
+      } finally {
+        setIsCapturing(false);
+      }
+    }
+  };
+
+  // --- 렌더링 컴포넌트 ---
+  const renderIntro = () => (
+    <div className="flex flex-col items-center justify-center text-center animate-fade-in space-y-6 py-8">
+      <div className="bg-indigo-100 p-5 rounded-full mb-2 shadow-inner">
+        <Users className="w-16 h-16 text-indigo-600" />
+      </div>
+      <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-800 break-keep leading-tight">
+        에고그램 테스트
+      </h1>
+      <p className="text-gray-600 mb-8 max-w-md break-keep leading-relaxed px-4">
+        총 30개의 질문으로 나의 팀 내 포지션과 소통 꿀팁, 그리고 케미를 알아봅니다.
+      </p>
+      <button 
+        onClick={handleStart}
+        className="w-full max-w-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-xl shadow-indigo-200 transition transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center gap-2 text-lg mt-4"
+      >
+        테스트 시작하기 <ArrowRight className="w-5 h-5" />
+      </button>
+    </div>
+  );
+
+  const renderTest = () => {
+    const question = QUESTIONS[currentQuestion];
+    if (!question) return null;
+
+    const progress = ((currentQuestion + 1) / QUESTIONS.length) * 100;
+    
+    return (
+      <div className="w-full max-w-md animate-fade-in flex flex-col h-full justify-between py-2">
+        <div className="space-y-6">
+          {/* Progress Bar */}
+          <div className="space-y-2 px-2">
+            <div className="flex justify-between text-sm font-bold text-indigo-500">
+              <span>진행도</span>
+              <span>{currentQuestion + 1} <span className="text-gray-400 font-medium">/ {QUESTIONS.length}</span></span>
+            </div>
+            <div className="w-full bg-indigo-100 rounded-full h-3">
+              <div 
+                className="bg-indigo-500 h-3 rounded-full transition-all duration-300 ease-out" 
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          </div>
+
+          {/* Question Card */}
+          <div className="bg-white rounded-3xl shadow-md border border-indigo-50 p-8 min-h-[180px] flex items-center justify-center text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 opacity-20"></div>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 break-keep leading-relaxed relative z-10">
+              <span className="text-indigo-300 text-4xl absolute -top-4 -left-4 opacity-50">"</span>
+              {question.text}
+              <span className="text-indigo-300 text-4xl absolute -bottom-6 -right-4 opacity-50">"</span>
+            </h2>
+          </div>
+        </div>
+
+        {/* Answers */}
+        <div className="space-y-3 mt-8">
+          {ANSWERS.map((answer, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleAnswer(answer.score)}
+              disabled={isTransitioning}
+              className={`w-full font-bold py-4 px-6 rounded-2xl transition-all duration-200 flex justify-center text-lg active:scale-[0.98] shadow-sm ${
+                isTransitioning 
+                ? 'bg-gray-50 text-gray-400 border border-gray-100 cursor-not-allowed shadow-none' 
+                : 'bg-white hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 text-gray-700 hover:text-indigo-700'
+              }`}
+            >
+              {answer.text}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderResult = () => {
+    const primary = getPrimaryTrait();
+    const resultData = RESULTS[primary];
+
+    return (
+      <div className="w-full flex flex-col items-center animate-fade-in pb-4">
+        
+        {/* --- 캡쳐 영역 시작 --- */}
+        <div id="result-capture-area" className="w-full flex flex-col items-center bg-gray-100 p-4 sm:p-8 rounded-[2.5rem]">
+          <h2 className="text-gray-500 font-bold mb-6 text-center text-sm tracking-wider bg-white px-5 py-2 rounded-full shadow-sm">당신의 팀 프로젝트 캐릭터는</h2>
+          
+          {/* 가로 2단 그리드 레이아웃으로 변경 */}
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* 좌측 패널: 캐릭터 핵심 정보 */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex justify-center mb-6">
+                  <div className={`p-6 rounded-3xl ${resultData.color} bg-opacity-10 shadow-inner`}>
+                    {resultData.icon}
+                  </div>
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center break-keep leading-tight">
+                  {resultData.title}
+                </h1>
+
+                {/* 말버릇 코너 */}
+                <div className="flex justify-center mb-6">
+                  <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-100 px-5 py-2.5 rounded-full">
+                    <MessageCircle className="w-4 h-4 text-gray-500" />
+                    <span className="text-[13px] font-semibold text-gray-700">말버릇: <span className="text-indigo-600">"{resultData.catchphrase}"</span></span>
+                  </div>
+                </div>
+
+                {/* PBL 추천 역할 */}
+                <div className="bg-indigo-50 text-indigo-900 px-5 py-4 rounded-2xl mb-5 border border-indigo-100 text-sm font-bold text-center">
+                  🎯 추천 역할 : <span className="text-indigo-600">{resultData.pblRole}</span>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-gray-600 text-[14px] leading-relaxed break-keep text-left bg-gray-50 p-5 rounded-t-2xl mb-0 border-b border-gray-100">
+                  {resultData.description}
+                </p>
+                <div className="bg-red-50 text-red-700 text-[13px] leading-relaxed break-keep text-left p-5 rounded-b-2xl border-t border-red-100">
+                  <span className="font-bold">⚠️ 아쉬울 수 있는 점:</span> {resultData.caution}
+                </div>
+              </div>
+            </div>
+
+            {/* 우측 패널: 궁합, 그래프, 팁 */}
+            <div className="flex flex-col gap-6">
+              
+              {/* 궁합 영역 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white border-b-4 border-blue-400 rounded-3xl p-5 text-center shadow-sm">
+                  <div className="flex justify-center mb-2"><Zap className="w-6 h-6 text-blue-500" /></div>
+                  <p className="text-[12px] font-bold text-blue-600 mb-1">시너지 폭발 짝꿍</p>
+                  <p className="text-[15px] font-extrabold text-gray-800 break-keep">{RESULTS[resultData.bestMatch].title.split(',')[1]}</p>
+                </div>
+                <div className="bg-white border-b-4 border-orange-400 rounded-3xl p-5 text-center shadow-sm">
+                  <div className="flex justify-center mb-2"><Puzzle className="w-6 h-6 text-orange-500" /></div>
+                  <p className="text-[12px] font-bold text-orange-600 mb-1">이해가 필요한 짝꿍</p>
+                  <p className="text-[15px] font-extrabold text-gray-800 break-keep">{RESULTS[resultData.badMatch].title.split(',')[1]}</p>
+                </div>
+              </div>
+
+              {/* 미니 에고그램 그래프 */}
+              <div className="bg-white rounded-3xl p-6 shadow-sm">
+                <h3 className="text-[14px] font-extrabold text-gray-800 mb-5 text-center">나의 에고그램 밸런스</h3>
+                <div className="space-y-3.5">
+                  {Object.entries(scores).map(([trait, score]) => {
+                    const percentage = (score / 30) * 100; 
+                    const label = trait === 'CP' ? '통제/원칙 (CP)' :
+                                  trait === 'NP' ? '배려/양육 (NP)' :
+                                  trait === 'A'  ? '논리/분석 (A)' :
+                                  trait === 'FC' ? '자유/창의 (FC)' : '순응/협조 (AC)';
+                    
+                    return (
+                      <div key={trait} className="flex items-center gap-4">
+                        <span className="w-24 text-[12px] font-bold text-gray-500 text-right">{label}</span>
+                        <div className="flex-1 bg-gray-100 rounded-full h-3.5">
+                          <div 
+                            className={`h-3.5 rounded-full transition-all duration-1000 ease-out ${primary === trait ? resultData.color : 'bg-gray-400'}`}
+                            style={{ width: `${percentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 아이스브레이킹 팁 */}
+              <div className="bg-white rounded-3xl p-6 text-[14px] flex gap-4 shadow-sm border-l-[6px] border-indigo-500 h-full">
+                <ShieldAlert className="w-7 h-7 flex-shrink-0 text-indigo-500 mt-1" />
+                <div className="w-full">
+                  <p className="font-extrabold mb-4 text-[16px] text-gray-800">나랑 일할 땐 이렇게 해줘요!</p>
+                  <ul className="space-y-3">
+                    {resultData.tip.map((t, idx) => (
+                      <li key={idx} className="flex items-start gap-2 break-keep leading-relaxed text-gray-700 font-medium">
+                        <span className="text-indigo-400 font-bold mt-0.5">✓</span>
+                        <span>{t}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* --- 캡쳐 영역 끝 --- */}
+
+        {/* 액션 버튼 */}
+        <div className="flex w-full max-w-md gap-3 mt-6 px-2">
+          <button 
+            onClick={handleCapture}
+            disabled={isCapturing}
+            className={`flex-1 font-bold py-4 px-4 rounded-2xl flex items-center justify-center gap-2 transition duration-200 ${
+              isCapturing ? 'bg-indigo-300 text-white cursor-not-allowed' : 'bg-gray-900 text-white hover:bg-gray-800 shadow-xl shadow-gray-300 hover:-translate-y-1'
+            }`}
+          >
+            {isCapturing ? <><Camera className="w-5 h-5 animate-pulse" /> 캡쳐 준비 중...</> : <><Camera className="w-5 h-5" /> 이미지로 캡쳐하기</>}
+          </button>
+          <button 
+            onClick={handleStart}
+            className="w-16 flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 rounded-2xl transition shadow-md border border-gray-200"
+            aria-label="다시하기"
+          >
+            <RotateCcw className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8 font-sans selection:bg-indigo-200">
+      {/* 결과창 진입 시 가로 사이즈를 max-w-4xl로 넓혀 대시보드 형태로 변경 */}
+      <div className={`bg-white w-full rounded-[2.5rem] shadow-2xl shadow-indigo-100/50 p-4 sm:p-8 min-h-[650px] flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 ${step === 'result' ? 'max-w-4xl' : 'max-w-xl'}`}>
+        {step === 'intro' && renderIntro()}
+        {step === 'test' && renderTest()}
+        {step === 'result' && renderResult()}
+        
+        {/* 장식용 배경 */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-48 h-48 rounded-full bg-indigo-50 blur-3xl -z-10 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-48 h-48 rounded-full bg-pink-50 blur-3xl -z-10 pointer-events-none"></div>
+      </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
+      `}} />
+    </div>
+  );
+}
