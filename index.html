@@ -55,6 +55,7 @@
     const IconStar = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>;
     const IconChevronLeft = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>;
     const IconChevronRight = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>;
+    const IconGift = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>;
 
     // --- 데이터 정의 (극단적인 표현을 걷어내고 공감하기 쉽게 완화된 버전) ---
     const QUESTIONS = [
@@ -108,10 +109,11 @@
         title: "팀의 든든한 가드레일, 칼각 원칙주의자",
         icon: <IconScale className="w-12 h-12 text-red-500" />,
         color: "bg-red-500",
+        hashtags: ["#겉바속촉", "#마감은_칼같이", "#알고보면_팀바보"],
+        superpower: "[마감 수호 방패] 데드라인 전날, 팀 전체의 작업 효율과 퀄리티를 200% 끌어올립니다.",
+        perk: "무임승차자 원천 차단 및 깔끔한 무혈 입성 버스 제공 🚌",
         pblRole: "팀장 / 일정 및 품질 관리",
         description: "기준 제시와 규칙 준수를 중시하는 책임감 있는 리더형입니다. 목표와 일정이 명확할 때 가장 큰 시너지를 내며 프로젝트의 품질을 꼼꼼하게 관리합니다.",
-        caution: "때로는 비판적이거나 깐깐해 보일 수 있어요. (⚠️ 같은 CP만 모이면 서로의 기준이 부딪혀 주도권 다툼이 일어날 수 있으니 주의!)",
-        extremeWarning: "원칙과 완성을 추구하는 성향이 꽤 높습니다! 기준이 높은 건 훌륭하지만, 자칫 팀원들이 숨 막혀 할 수 있으니 가끔은 융통성을 발휘해 보세요.",
         catchphrase: "이거 데드라인이 언제까지죠?",
         bestMatch: "A", 
         badMatch: "FC", 
@@ -126,10 +128,11 @@
         title: "팀의 힐링 포션, 다정다감 케어러",
         icon: <IconHeart className="w-12 h-12 text-pink-500" />,
         color: "bg-pink-500",
+        hashtags: ["#따뜻한_난로", "#리액션_장인", "#팀워크_최우선"],
+        superpower: "[무한 힐링 포션] 팀원들의 멘탈이 바닥났을 때, 따뜻한 위로로 스트레스를 반으로 줄여줍니다.",
+        perk: "당 떨어질 때쯤 귀신같이 나타나는 간식 제공 및 무한 칭찬 세례 🍬",
         pblRole: "분위기 조율 / 갈등 완화 / 발표자",
         description: "팀원을 배려하고 갈등을 완화하는 공감 능력자입니다. 팀의 분위기를 긍정적으로 이끌고 원활한 소통을 지원하는 데 탁월합니다.",
-        caution: "팀원들에게 지나치게 맞춰주다 보면 결정이 늦어질 수 있어요. (⚠️ 같은 NP만 모이면 결정력이 부족해져 진행이 느려질 수 있어요!)",
-        extremeWarning: "타인을 배려하는 마음이 무척 큽니다! 팀원 챙기기에 에너지를 쏟다 정작 본인이 지칠 수 있습니다. 가끔은 '거절할 용기'를 내보는 것도 좋습니다.",
         catchphrase: "많이 힘들죠? 제가 뭐 좀 도와드릴까요?",
         bestMatch: "FC", 
         badMatch: "A",  
@@ -144,10 +147,11 @@
         title: "팀의 네비게이션, 냉철한 팩트폭격기",
         icon: <IconBrain className="w-12 h-12 text-blue-500" />,
         color: "bg-blue-500",
+        hashtags: ["#감정보단_팩트", "#효율_끝판왕", "#인간_엑셀"],
+        superpower: "[논리 회로 가동] 감정에 휩쓸려 배가 산으로 갈 때, 정확한 데이터로 방향을 찾아냅니다.",
+        perk: "쓸데없는 회의 시간을 절반으로 줄여주는 칼퇴 보장 티켓 🎟️",
         pblRole: "자료 조사 및 분석 / 논리적 판단 / 기획",
         description: "자료 분석과 논리적 판단을 통해 계획을 수립하는 브레인입니다. 감정에 휩쓸리지 않고 객관적 근거를 바탕으로 해결책을 제시합니다.",
-        caution: "팩트 위주라 감정적인 소통이 다소 부족해 보일 수 있어요. (⚠️ 같은 A만 모이면 활동성이 낮고 분위기가 너무 딱딱해질 수 있어요!)",
-        extremeWarning: "논리와 이성이 매우 강합니다! 문제 해결 능력은 탁월하지만, 가끔은 데이터나 논리보다 '따뜻한 공감 한마디'가 더 큰 팀워크를 만듭니다.",
         catchphrase: "그 주장을 뒷받침할 데이터가 있나요?",
         bestMatch: "CP", 
         badMatch: "NP",  
@@ -162,10 +166,11 @@
         title: "팀의 스파크, 자유로운 아이디어 뱅크",
         icon: <IconSparkles className="w-12 h-12 text-yellow-500" />,
         color: "bg-yellow-500",
+        hashtags: ["#아이디어_자판기", "#분위기_메이커", "#호기심_천국"],
+        superpower: "[영감의 스파크] 꽉 막힌 회의에서 무에서 유를 창조해내는 기적을 일으킵니다.",
+        perk: "지루할 틈이 없는 유쾌한 프로젝트 분위기와 꿀잼 보장 🎢",
         pblRole: "아이디어 제안 / 창의적 시도 / 발표",
         description: "자유롭게 아이디어를 제안하고 창의적인 시도를 즐기는 분위기 메이커입니다. 엉뚱하지만 기발한 발상으로 팀에 강력한 활력을 불어넣습니다.",
-        caution: "다소 산만해 보이거나 일의 마무리가 약할 수 있어요. (⚠️ 같은 FC만 모이면 아이디어는 넘치지만 결과물이 안 나올 수 있어요!)",
-        extremeWarning: "자유로움과 즉흥성이 꽤 높습니다! 통통 튀는 아이디어도 좋지만, 팀 프로젝트에서는 일의 마무리와 디테일을 챙기는 것도 잊지 마세요.",
         catchphrase: "아! 갑자기 재밌는 생각 났어요!",
         bestMatch: "NP", 
         badMatch: "CP",  
@@ -180,10 +185,11 @@
         title: "팀의 윤활유, 평화주의자 조율러",
         icon: <IconUsers className="w-12 h-12 text-green-500" />,
         color: "bg-green-500",
+        hashtags: ["#좋은게_좋은거죠", "#숨은_에이스", "#리액션_맛집"],
+        superpower: "[만능 스펀지] 어떤 강한 갈등과 스트레스도 부드럽게 흡수하여 팀의 붕괴를 막아냅니다.",
+        perk: "내 의견을 찰떡같이 알아듣고 서포트해주는 든든한 백업 지원 🛡️",
         pblRole: "자료 정리 / 지시 이행 / 안정적 지원",
         description: "타인을 배려하며 지시를 잘 이행하는 든든한 조력자입니다. 눈에 띄게 나서지는 않지만, 안정적으로 참여하여 프로젝트가 부드럽게 굴러가게 합니다.",
-        caution: "너무 수동적이거나 자신의 의견 제시가 적을 수 있어요. (⚠️ 같은 AC만 모이면 서로 눈치만 보고 진도가 안 나갈 수 있어요!)",
-        extremeWarning: "순응과 양보가 무척 강합니다! 갈등을 피하려다 궂은일을 다 떠안게 될 수 있습니다. 팀을 위해 명확하게 '내 의견'을 말하는 연습이 필요합니다.",
         catchphrase: "네, 저는 다 좋아요. 편하신 대로 맞춰주세요.",
         bestMatch: "CP", 
         badMatch: "A",   
@@ -208,6 +214,7 @@
       
       const [showReview, setShowReview] = useState(false);
       const [showSecondaryModal, setShowSecondaryModal] = useState(false);
+      const [showAllTypesModal, setShowAllTypesModal] = useState(false); 
 
       useEffect(() => {
         if (step === 'result' && window.confetti) {
@@ -226,8 +233,8 @@
         setSelectedAnswers(Array(QUESTIONS.length).fill(null)); 
         setShowReview(false);
         setShowSecondaryModal(false);
+        setShowAllTypesModal(false); 
         setIsTransitioning(false);
-        // 이름을 유지하고 싶은 사용자가 많을 수 있으니 시작 시 이름 초기화는 제거/유지 선택 가능. 일단 유지.
       };
 
       const handleAnswer = (answerObj) => {
@@ -303,13 +310,12 @@
             const canvas = await window.html2canvas(captureArea, {
               scale: 2, 
               backgroundColor: '#f3f4f6', 
-              windowWidth: 1024, // 모바일 환경에서도 Tailwind의 md: 브레이크포인트가 강제되도록 설정
+              windowWidth: 1024, 
               useCORS: true, 
               logging: false,
               onclone: (clonedDoc) => {
                 const el = clonedDoc.getElementById('result-capture-area');
                 if (el) {
-                  // 캡쳐 복제본의 너비를 강제로 늘려 그리드 레이아웃이 찌그러지지 않고 유지되게 처리
                   el.style.width = '896px';
                   el.style.minWidth = '896px';
                   el.style.margin = '0 auto';
@@ -447,9 +453,6 @@
         const primaryScore = finalScores[primary];
         const secondaryScore = finalScores[secondary];
         
-        const isExtreme = primaryScore >= 28; 
-        
-        // 이름 출력 로직 (입력값이 없으면 '당신')
         const displayName = name.trim() ? `${name.trim()}님` : '당신';
 
         return (
@@ -457,12 +460,12 @@
             
             <div id="result-capture-area" className="w-full flex flex-col items-center bg-gray-100 p-4 sm:p-8 rounded-[2.5rem]">
               <h2 className="text-gray-500 font-bold mb-6 text-center text-sm tracking-wider bg-white px-5 py-2.5 rounded-full shadow-sm">
-                {/* 이름이 들어갔을 때 눈에 확 띄도록 강조 처리 */}
                 <span className="text-indigo-600 font-extrabold">{displayName}</span>의 팀 프로젝트 캐릭터는
               </h2>
               
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
                 
+                {/* 좌측 패널 */}
                 <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col justify-between">
                   <div>
                     <div className="flex justify-center mb-6">
@@ -470,9 +473,18 @@
                         {resultData.icon}
                       </div>
                     </div>
-                    <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center break-keep leading-tight">
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 text-center break-keep leading-tight">
                       {resultData.title}
                     </h1>
+
+                    {/* ✨ 4번 추가: 해시태그 */}
+                    <div className="flex flex-wrap justify-center gap-2 mb-6">
+                      {resultData.hashtags.map((tag, idx) => (
+                         <span key={idx} className="text-[12px] font-bold px-3 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200">
+                           {tag}
+                         </span>
+                      ))}
+                    </div>
 
                     <div className="flex justify-center mb-6">
                       <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-100 px-5 py-2.5 rounded-full">
@@ -485,7 +497,16 @@
                       🎯 추천 역할 : <span className="text-indigo-600">{resultData.pblRole}</span>
                     </div>
 
-                    {/* flex-wrap을 추가하여 좁은 화면에서도 글자가 넘치거나 깨지지 않게 방지 */}
+                    {/* ✨ 1번 추가: 숨겨진 슈퍼파워 */}
+                    <div className="bg-gradient-to-r from-gray-50 to-white text-gray-800 px-5 py-4 rounded-2xl mb-6 border border-gray-100 shadow-sm">
+                      <div className="flex items-center gap-1.5 mb-1.5 text-indigo-600 font-extrabold text-[13px]">
+                        <IconStar className="w-4 h-4" /> 나의 숨겨진 슈퍼파워
+                      </div>
+                      <p className="text-[13px] leading-relaxed break-keep font-semibold">
+                        {resultData.superpower}
+                      </p>
+                    </div>
+
                     <div className="flex flex-wrap items-center justify-center gap-2 mb-6 text-[13px] font-bold text-gray-600">
                       <span className="text-yellow-500"><IconStar className="w-4 h-4" /></span>
                       내 안의 부캐: 
@@ -501,27 +522,13 @@
                   </div>
 
                   <div>
-                    <p className="text-gray-600 text-[14px] leading-relaxed break-keep text-left bg-gray-50 p-5 rounded-t-2xl mb-0 border-b border-gray-100">
+                    <p className="text-gray-600 text-[14px] leading-relaxed break-keep text-left bg-gray-50 p-5 rounded-2xl mb-0 border border-gray-100">
                       {resultData.description}
                     </p>
-                    <div className="bg-red-50 text-red-700 text-[13px] leading-relaxed break-keep text-left p-5 rounded-b-2xl border-t border-red-100">
-                      <span className="font-bold">⚠️ 아쉬울 수 있는 점:</span> {resultData.caution}
-                    </div>
-
-                    {isExtreme && (
-                      <div className="mt-4 bg-gray-900 text-gray-100 text-[13.5px] leading-relaxed break-keep text-left p-5 rounded-2xl border-l-4 border-red-500 shadow-lg relative overflow-hidden">
-                        <div className="absolute top-0 right-0 -mt-2 -mr-2 text-red-500 opacity-20 transform rotate-12">
-                          <IconShieldAlert className="w-16 h-16" />
-                        </div>
-                        <p className="font-extrabold text-red-400 mb-1.5 relative z-10 flex items-center gap-1.5">
-                          <span className="animate-pulse">🚨</span> 밸런스 붕괴 주의보!
-                        </p>
-                        <p className="relative z-10">{resultData.extremeWarning}</p>
-                      </div>
-                    )}
                   </div>
                 </div>
 
+                {/* 우측 패널 */}
                 <div className="flex flex-col gap-6">
                   
                   <div className="grid grid-cols-2 gap-4">
@@ -562,6 +569,16 @@
                     </div>
                   </div>
 
+                  {/* ✨ 3번 추가: +1 혜택 */}
+                  <div className="bg-yellow-50 rounded-3xl p-5 shadow-sm border border-yellow-200">
+                    <div className="flex items-center gap-2 mb-2 text-yellow-700 font-extrabold text-[14px]">
+                      <IconGift className="w-5 h-5" /> 나와 함께하면 얻는 [+1 혜택]
+                    </div>
+                    <p className="text-[14px] font-bold text-gray-800 break-keep leading-relaxed pl-7">
+                      {resultData.perk}
+                    </p>
+                  </div>
+
                   <div className="bg-white rounded-3xl p-6 text-[14px] flex gap-4 shadow-sm border-l-[6px] border-indigo-500 h-full">
                     <IconShieldAlert className="w-7 h-7 flex-shrink-0 text-indigo-500 mt-1" />
                     <div className="w-full">
@@ -580,31 +597,40 @@
               </div>
             </div>
 
-            <div className="flex w-full max-w-xl gap-2 sm:gap-3 mt-6 px-2">
+            <div className="flex flex-col sm:flex-row w-full max-w-xl gap-2 sm:gap-3 mt-6 px-2">
               <button 
                 onClick={handleCapture}
                 disabled={isCapturing}
-                className={`flex-1 font-bold py-4 px-3 sm:px-4 rounded-2xl flex items-center justify-center gap-2 transition duration-200 text-sm sm:text-base ${
+                className={`w-full sm:w-auto sm:flex-1 font-bold py-4 px-3 sm:px-4 rounded-2xl flex items-center justify-center gap-2 transition duration-200 text-sm sm:text-base ${
                   isCapturing ? 'bg-indigo-300 text-white cursor-not-allowed' : 'bg-gray-900 text-white hover:bg-gray-800 shadow-xl shadow-gray-300 hover:-translate-y-1'
                 }`}
               >
                 {isCapturing ? <><IconCamera className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" /> 캡쳐 중...</> : <><IconCamera className="w-4 h-4 sm:w-5 sm:h-5" /> 캡쳐하기</>}
               </button>
               
-              <button 
-                onClick={() => setShowReview(true)}
-                className="flex-1 font-bold py-4 px-3 sm:px-4 rounded-2xl flex items-center justify-center gap-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition shadow-sm hover:-translate-y-1 text-sm sm:text-base"
-              >
-                <IconList className="w-4 h-4 sm:w-5 sm:h-5" /> 답변 보기
-              </button>
+              <div className="flex gap-2 sm:gap-3 w-full sm:w-auto sm:flex-1">
+                <button 
+                  onClick={() => setShowReview(true)}
+                  className="flex-1 font-bold py-4 px-2 sm:px-3 rounded-2xl flex items-center justify-center gap-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition shadow-sm hover:-translate-y-1 text-[13px] sm:text-sm whitespace-nowrap"
+                >
+                  <IconList className="w-4 h-4 sm:w-5 sm:h-5" /> 답변
+                </button>
 
-              <button 
-                onClick={handleStart}
-                className="w-14 sm:w-16 flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 rounded-2xl transition shadow-md border border-gray-200"
-                aria-label="다시하기"
-              >
-                <IconRotateCcw className="w-5 h-5" />
-              </button>
+                <button 
+                  onClick={() => setShowAllTypesModal(true)}
+                  className="flex-1 font-bold py-4 px-2 sm:px-3 rounded-2xl flex items-center justify-center gap-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition shadow-sm hover:-translate-y-1 text-[13px] sm:text-sm whitespace-nowrap"
+                >
+                  <IconUsers className="w-4 h-4 sm:w-5 sm:h-5" /> 다른 성향
+                </button>
+
+                <button 
+                  onClick={handleStart}
+                  className="w-14 sm:w-16 flex-shrink-0 flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 rounded-2xl transition shadow-md border border-gray-200"
+                  aria-label="다시하기"
+                >
+                  <IconRotateCcw className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {showSecondaryModal && (
@@ -635,6 +661,39 @@
                     >
                       확인
                     </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showAllTypesModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 z-[60] flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm">
+                <div className="bg-white rounded-[2rem] w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl relative overflow-hidden">
+                  <div className="p-6 sm:p-8 border-b border-gray-100 flex justify-between items-center bg-white z-10 relative">
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900">전체 팀 프로젝트 캐릭터</h3>
+                      <p className="text-sm text-gray-500 mt-1">우리 팀에는 어떤 성향들이 있을까요?</p>
+                    </div>
+                    <button 
+                      onClick={() => setShowAllTypesModal(false)}
+                      className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-600 transition"
+                    >
+                      <IconX className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="overflow-y-auto p-4 sm:p-8 space-y-4 bg-gray-50 rounded-b-[2rem]">
+                    {Object.values(RESULTS).map((type, idx) => (
+                      <div key={idx} className="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                        <div className={`p-4 rounded-2xl ${type.color} bg-opacity-10 shrink-0 self-center`}>
+                          {type.icon}
+                        </div>
+                        <div className="flex-1 text-center sm:text-left">
+                          <h4 className="font-extrabold text-gray-800 text-lg sm:text-xl mb-1">{type.title}</h4>
+                          <p className="text-sm font-bold text-indigo-500 mb-2">🎯 {type.pblRole}</p>
+                          <p className="text-[13px] sm:text-sm text-gray-600 break-keep leading-relaxed">{type.description}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
