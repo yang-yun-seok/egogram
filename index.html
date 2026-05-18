@@ -88,11 +88,11 @@
       { id: 24, text: "반복적이고 단조로운 작업보다는 매번 새로운 자극이 있는 일이 더 잘 맞는다.", category: "FC" },
       { id: 25, text: "내가 조금 양보하더라도 팀의 평화와 조화가 유지되는 것이 훨씬 낫다.", category: "AC" },
 
-      { id: 26, text: "문제가 발생하면 원칙과 기준에 따라 공정하게 처리해야 한다고 믿는다.", category: "CP" },
-      { id: 27, text: "갈등이 생기면 논쟁하기보다는 서로의 감정을 먼저 다독이는 것이 좋다고 생각한다.", category: "NP" },
-      { id: 28, text: "모호한 감정적 표현보다는 명확하고 구체적인 사실 위주의 소통이 편하다.", category: "A" },
-      { id: 29, text: "자유롭고 편안한 분위기일 때 가장 좋은 아이디어가 번뜩인다.", category: "FC" },
-      { id: 30, text: "내가 이끄는 것보다는 리더의 방향성에 맞춰 묵묵히 서포트하는 역할이 더 편안하다.", category: "AC" }
+      { id: 26, text: "결과물이 내 기준에 미치지 못하면, 시간이 조금 더 걸리더라도 완성도를 높이고 싶어 한다.", category: "CP" },
+      { id: 27, text: "누군가 좋은 성과를 내거나 칭찬을 받으면, 내 일처럼 진심으로 기뻐해 준다.", category: "NP" },
+      { id: 28, text: "팀원의 주장에 설득되려면, 감정적인 호소보다는 타당한 근거(레퍼런스)가 필요하다.", category: "A" },
+      { id: 29, text: "남들이 잘 생각하지 않는 색다른 시각으로 문제에 접근한다는 이야기를 종종 듣는다.", category: "FC" },
+      { id: 30, text: "자유롭게 하라고 하면 오히려 무엇을 해야 할지 고민이 많아진다.", category: "AC" }
     ];
 
     const ANSWERS = [
@@ -111,6 +111,7 @@
         color: "bg-red-500",
         hashtags: ["#겉바속촉", "#마감은_칼같이", "#알고보면_팀바보"],
         superpower: "[마감 수호 방패] 데드라인 전날, 팀 전체의 작업 효율과 퀄리티를 200% 끌어올립니다.",
+        magicSpell: "역시 꼼꼼하시네요! 덕분에 일정 밀릴 걱정 없이 너무 든든합니다.",
         pblRole: "팀장 / 일정 및 품질 관리",
         description: "기준 제시와 규칙 준수를 중시하는 책임감 있는 리더형입니다. 목표와 일정이 명확할 때 가장 큰 시너지를 내며 프로젝트의 품질을 꼼꼼하게 관리합니다.",
         catchphrase: "이거 데드라인이 언제까지죠?",
@@ -131,6 +132,7 @@
         color: "bg-pink-500",
         hashtags: ["#따뜻한_난로", "#리액션_장인", "#팀워크_최우선"],
         superpower: "[무한 힐링 포션] 팀원들의 멘탈이 바닥났을 때, 따뜻한 위로로 스트레스를 반으로 줄여줍니다.",
+        magicSpell: "진짜 큰 힘이 됐어요. 항상 세심하게 신경 써주셔서 정말 감사합니다!",
         pblRole: "분위기 조율 / 갈등 완화 / 발표자",
         description: "팀원을 배려하고 갈등을 완화하는 공감 능력자입니다. 팀의 분위기를 긍정적으로 이끌고 원활한 소통을 지원하는 데 탁월합니다.",
         catchphrase: "많이 힘들죠? 제가 뭐 좀 도와드릴까요?",
@@ -151,6 +153,7 @@
         color: "bg-blue-500",
         hashtags: ["#감정보단_팩트", "#효율_끝판왕", "#인간_엑셀"],
         superpower: "[논리 회로 가동] 감정에 휩쓸려 배가 산으로 갈 때, 정확한 데이터로 방향을 찾아냅니다.",
+        magicSpell: "정리해주신 내용 덕분에 복잡했던 문제가 단번에 완벽히 이해됐어요!",
         pblRole: "자료 조사 및 분석 / 논리적 판단 / 기획",
         description: "자료 분석과 논리적 판단을 통해 계획을 수립하는 브레인입니다. 감정에 휩쓸리지 않고 객관적 근거를 바탕으로 해결책을 제시합니다.",
         catchphrase: "그 주장을 뒷받침할 데이터가 있나요?",
@@ -171,6 +174,7 @@
         color: "bg-yellow-500",
         hashtags: ["#아이디어_자판기", "#분위기_메이커", "#호기심_천국"],
         superpower: "[영감의 스파크] 꽉 막힌 회의에서 무에서 유를 창조해내는 기적을 일으킵니다.",
+        magicSpell: "와, 대박! 어떻게 그런 기발하고 재밌는 생각을 하셨어요?",
         pblRole: "아이디어 제안 / 창의적 시도 / 발표",
         description: "자유롭게 아이디어를 제안하고 창의적인 시도를 즐기는 분위기 메이커입니다. 엉뚱하지만 기발한 발상으로 팀에 강력한 활력을 불어넣습니다.",
         catchphrase: "아! 갑자기 재밌는 생각 났어요!",
@@ -191,6 +195,7 @@
         color: "bg-green-500",
         hashtags: ["#좋은게_좋은거죠", "#숨은_에이스", "#리액션_맛집"],
         superpower: "[만능 스펀지] 어떤 강한 갈등과 스트레스도 부드럽게 흡수하여 팀의 붕괴를 막아냅니다.",
+        magicSpell: "항상 보이지 않는 곳에서 묵묵히 배려하고 다 맞춰주셔서 정말 감사해요!",
         pblRole: "자료 정리 / 지시 이행 / 안정적 지원",
         description: "타인을 배려하며 지시를 잘 이행하는 든든한 조력자입니다. 눈에 띄게 나서지는 않지만, 안정적으로 참여하여 프로젝트가 부드럽게 굴러가게 합니다.",
         catchphrase: "네, 저는 다 좋아요. 편하신 대로 맞춰주세요.",
@@ -570,6 +575,16 @@
                         );
                       })}
                     </div>
+                  </div>
+
+                  {/* ✨ 새로 추가된 긍정적 아이스브레이킹 요소: 마법의 한마디 */}
+                  <div className="bg-pink-50 rounded-3xl p-5 shadow-sm border border-pink-100">
+                    <div className="flex items-center gap-2 mb-2 text-pink-600 font-extrabold text-[14px]">
+                      <IconHeart className="w-5 h-5" /> 나를 춤추게 하는 마법의 한마디
+                    </div>
+                    <p className="text-[14px] font-bold text-gray-800 break-keep leading-relaxed pl-7">
+                      "{resultData.magicSpell}"
+                    </p>
                   </div>
 
                   <div className="bg-white rounded-3xl p-6 text-[14px] flex gap-4 shadow-sm border-l-[6px] border-indigo-500 h-full">
