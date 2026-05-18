@@ -118,7 +118,8 @@
         tip: [
           "업무 요청 시 기한(Due Date)과 배경을 명확히 적어주세요.",
           "모호한 표현('적당히', '알아서')보다는 구체적인 수치나 가이드라인을 선호해요.",
-          "제 피드백은 사람을 향한 공격이 아니라 '더 나은 결과물'을 위한 고민입니다. 상처받지 마세요!"
+          "제 피드백은 사람을 향한 공격이 아니라 '더 나은 결과물'을 위한 고민입니다. 상처받지 마세요!",
+          "갑작스러운 일정 변경이나 룰 브레이킹은 미리 충분한 이유를 설명해 주시면 감사하겠습니다."
         ]
       },
       NP: {
@@ -135,7 +136,8 @@
         tip: [
           "본론으로 들어가기 전, '주말 잘 보내셨어요?' 같은 가벼운 스몰토크가 큰 힘이 돼요.",
           "팀원 간의 차가운 피드백이 오갈 때 스트레스를 받습니다. 둥글게 말하는 쿠션어를 사용해 주세요.",
-          "제가 도와준 일에 대해 진심 어린 '고마워요!' 한마디면 밤샘 작업도 거뜬합니다."
+          "제가 도와준 일에 대해 진심 어린 '고마워요!' 한마디면 밤샘 작업도 거뜬합니다.",
+          "모두의 의견을 존중하다 보니 제 주장을 강하게 못할 때가 있어요. 제 생각도 한 번씩 물어봐 주세요."
         ]
       },
       A: {
@@ -152,7 +154,8 @@
         tip: [
           "문제 상황을 공유할 때는 '감정'보다 '사실(What, Why, How)' 위주로 정리해서 말씀해 주세요.",
           "뒷받침할 데이터나 레퍼런스를 가져와 주시면 빠르게 설득됩니다.",
-          "회의는 목적과 아젠다가 명확할 때 가장 즐겁습니다. 의식의 흐름대로 진행되는 회의는 지쳐요."
+          "회의는 목적과 아젠다가 명확할 때 가장 즐겁습니다. 의식의 흐름대로 진행되는 회의는 지쳐요.",
+          "질문이나 반박을 공격으로 오해하지 말아주세요. 단순히 사실 관계를 확인하고 싶은 것뿐입니다."
         ]
       },
       FC: {
@@ -169,7 +172,8 @@
         tip: [
           "엉뚱한 아이디어라도 '오, 재밌겠는데요?'라며 리액션해 주시면 더 좋은 아이디어가 폭발해요.",
           "너무 빡빡한 마이크로 매니징보다는, 큰 방향성만 주고 자율적으로 일할 수 있게 맡겨주세요.",
-          "칭찬과 인정은 저의 원동력입니다! 공개적인 칭찬은 저를 춤추게 합니다."
+          "칭찬과 인정은 저의 원동력입니다! 공개적인 칭찬은 저를 춤추게 합니다.",
+          "아이디어 발산은 잘하지만 정리가 약할 수 있어요. 꼼꼼한 분이 살짝만 잡아주시면 최고의 결과가 나옵니다."
         ]
       },
       AC: {
@@ -186,7 +190,8 @@
         tip: [
           "회의 때 제가 조용하다면, 듣고 정리하는 중일 확률이 높아요. 'ㅇㅇ님 생각은 어때요?'라고 부드럽게 짚어주세요.",
           "누군가 혼자 책임을 다 떠안거나 소외되는 상황을 견디기 힘들어해요. 모두가 1인분을 하는 밸런스를 중시합니다.",
-          "의견이 충돌할 때, 강압적으로 밀어붙이기보다 '우리 이런 방향으로 타협해보면 어떨까요?'라며 제안해 주세요."
+          "의견이 충돌할 때, 강압적으로 밀어붙이기보다 '우리 이런 방향으로 타협해보면 어떨까요?'라며 제안해 주세요.",
+          "불만이 있어도 겉으로 잘 드러내지 않아요. 1대1로 편안하게 물어봐 주시면 속마음을 얘기할게요."
         ]
       }
     };
@@ -222,7 +227,7 @@
         setShowReview(false);
         setShowSecondaryModal(false);
         setIsTransitioning(false);
-        setName(''); 
+        // 이름을 유지하고 싶은 사용자가 많을 수 있으니 시작 시 이름 초기화는 제거/유지 선택 가능. 일단 유지.
       };
 
       const handleAnswer = (answerObj) => {
@@ -298,15 +303,25 @@
             const canvas = await window.html2canvas(captureArea, {
               scale: 2, 
               backgroundColor: '#f3f4f6', 
-              windowWidth: captureArea.scrollWidth,
+              windowWidth: 1024, // 모바일 환경에서도 Tailwind의 md: 브레이크포인트가 강제되도록 설정
               useCORS: true, 
-              logging: false
+              logging: false,
+              onclone: (clonedDoc) => {
+                const el = clonedDoc.getElementById('result-capture-area');
+                if (el) {
+                  // 캡쳐 복제본의 너비를 강제로 늘려 그리드 레이아웃이 찌그러지지 않고 유지되게 처리
+                  el.style.width = '896px';
+                  el.style.minWidth = '896px';
+                  el.style.margin = '0 auto';
+                }
+              }
             });
             
             const image = canvas.toDataURL("image/png");
             const link = document.createElement('a');
             link.href = image;
-            link.download = `나의_팀워크_에고그램.png`;
+            const safeName = name.trim() ? `${name.trim()}_에고그램` : `나의_팀워크_에고그램`;
+            link.download = `${safeName}.png`;
             link.click();
           } catch (error) {
             console.error("캡쳐 오류:", error);
@@ -433,14 +448,17 @@
         const secondaryScore = finalScores[secondary];
         
         const isExtreme = primaryScore >= 28; 
+        
+        // 이름 출력 로직 (입력값이 없으면 '당신')
         const displayName = name.trim() ? `${name.trim()}님` : '당신';
 
         return (
           <div className="w-full flex flex-col items-center animate-fade-in pb-4">
             
             <div id="result-capture-area" className="w-full flex flex-col items-center bg-gray-100 p-4 sm:p-8 rounded-[2.5rem]">
-              <h2 className="text-gray-500 font-bold mb-6 text-center text-sm tracking-wider bg-white px-5 py-2 rounded-full shadow-sm">
-                {displayName}의 팀 프로젝트 캐릭터는
+              <h2 className="text-gray-500 font-bold mb-6 text-center text-sm tracking-wider bg-white px-5 py-2.5 rounded-full shadow-sm">
+                {/* 이름이 들어갔을 때 눈에 확 띄도록 강조 처리 */}
+                <span className="text-indigo-600 font-extrabold">{displayName}</span>의 팀 프로젝트 캐릭터는
               </h2>
               
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -467,7 +485,8 @@
                       🎯 추천 역할 : <span className="text-indigo-600">{resultData.pblRole}</span>
                     </div>
 
-                    <div className="flex items-center justify-center gap-2 mb-6 text-[13px] font-bold text-gray-600">
+                    {/* flex-wrap을 추가하여 좁은 화면에서도 글자가 넘치거나 깨지지 않게 방지 */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 mb-6 text-[13px] font-bold text-gray-600">
                       <span className="text-yellow-500"><IconStar className="w-4 h-4" /></span>
                       내 안의 부캐: 
                       <button 
@@ -477,7 +496,7 @@
                       >
                         {secondaryData.title.split(',')[1]} <span className="text-[10px] opacity-80">🔍</span>
                       </button>
-                      {primaryScore - secondaryScore <= 2 && <span className="text-indigo-500 text-[11px] bg-indigo-50 px-2 rounded-full ml-1 border border-indigo-100">비등비등!</span>}
+                      {primaryScore - secondaryScore <= 2 && <span className="text-indigo-500 text-[11px] bg-indigo-50 px-2 rounded-full border border-indigo-100">비등비등!</span>}
                     </div>
                   </div>
 
