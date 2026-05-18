@@ -199,6 +199,7 @@
       const [name, setName] = useState('');
       const [userAnswers, setUserAnswers] = useState([]);
       const [showReview, setShowReview] = useState(false);
+      const [showSecondaryModal, setShowSecondaryModal] = useState(false); // 부캐 설명 모달 상태 추가
 
       // 폭죽 애니메이션 효과
       useEffect(() => {
@@ -218,6 +219,7 @@
         setCurrentQuestion(0);
         setUserAnswers([]);
         setShowReview(false);
+        setShowSecondaryModal(false); // 다시하기 시 모달 닫기
         setIsTransitioning(false);
         setName(''); // 다시하기 시 이전 캡쳐 잔상 방지를 위해 이름도 완전 초기화
       };
@@ -422,11 +424,18 @@
                       🎯 추천 역할 : <span className="text-indigo-600">{resultData.pblRole}</span>
                     </div>
 
-                    {/* ✨ 내 안의 부캐 (2순위) 표시 영역 - 새롭게 추가됨 */}
+                    {/* ✨ 내 안의 부캐 (2순위) 표시 영역 - 버튼으로 변경 */}
                     <div className="flex items-center justify-center gap-2 mb-6 text-[13px] font-bold text-gray-600">
                       <span className="text-yellow-500"><IconStar className="w-4 h-4" /></span>
-                      내 안의 부캐: <span className={`px-2 py-0.5 rounded text-white ${secondaryData.color}`}>{secondaryData.title.split(',')[1]}</span>
-                      {primaryScore - secondaryScore <= 2 && <span className="text-indigo-500 text-[11px] bg-indigo-50 px-2 rounded-full ml-1">비등비등!</span>}
+                      내 안의 부캐: 
+                      <button 
+                        onClick={() => setShowSecondaryModal(true)}
+                        className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-white font-extrabold ${secondaryData.color} hover:scale-105 hover:shadow-md transition cursor-pointer`}
+                        title="클릭해서 부캐 설명 보기"
+                      >
+                        {secondaryData.title.split(',')[1]} <span className="text-[10px] opacity-80">🔍</span>
+                      </button>
+                      {primaryScore - secondaryScore <= 2 && <span className="text-indigo-500 text-[11px] bg-indigo-50 px-2 rounded-full ml-1 border border-indigo-100">비등비등!</span>}
                     </div>
                   </div>
 
@@ -539,6 +548,41 @@
                 <IconRotateCcw className="w-5 h-5" />
               </button>
             </div>
+
+            {/* 부캐(2순위) 설명 모달 (캡쳐 영역 밖) */}
+            {showSecondaryModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 z-[60] flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm">
+                <div className="bg-white rounded-[2rem] w-full max-w-sm flex flex-col shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4">
+                    <button 
+                      onClick={() => setShowSecondaryModal(false)}
+                      className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-600 transition"
+                    >
+                      <IconX className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="p-8 flex flex-col items-center text-center mt-2">
+                    <h3 className="text-gray-500 font-bold mb-4 text-[12px] tracking-wider bg-gray-100 px-4 py-1.5 rounded-full">
+                      나의 두 번째 성향 (부캐)
+                    </h3>
+                    <div className={`p-5 rounded-3xl ${secondaryData.color} bg-opacity-10 shadow-inner mb-5`}>
+                      {secondaryData.icon}
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-4">{secondaryData.title}</h2>
+                    <div className="bg-gray-50 p-5 rounded-xl text-[14px] leading-relaxed break-keep text-gray-600 border border-gray-100">
+                      {secondaryData.description}
+                    </div>
+                    <button 
+                      onClick={() => setShowSecondaryModal(false)}
+                      className="mt-6 w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition shadow-lg"
+                    >
+                      확인
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
           </div>
         );
       };
