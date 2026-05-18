@@ -15,8 +15,9 @@
   <!-- Babel (브라우저에서 JSX 변환) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- html2canvas (이미지 캡쳐) -->
+  <!-- html2canvas (이미지 캡쳐) & canvas-confetti (폭죽 애니메이션) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <style>
     @keyframes fadeIn {
@@ -36,7 +37,7 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // --- 아이콘 컴포넌트 (Lucide 대체) ---
+    // --- 아이콘 컴포넌트 ---
     const IconCamera = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>;
     const IconArrowRight = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
     const IconRotateCcw = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>;
@@ -51,44 +52,45 @@
     const IconPuzzle = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.61 1.611c-.941.941-2.468.941-3.409 0L8.73 19.73a.98.98 0 0 1-.276-.837c.07-.47.48-.802.925-.968a2.5 2.5 0 1 0-3.214-3.214c-.166-.446-.497-.855-.968-.925a.979.979 0 0 1-.837-.276L2.749 11.9a2.41 2.41 0 0 1 0-3.409l1.568-1.568a.98.98 0 0 1 .837-.276c.47.07.802.48.968.925a2.5 2.5 0 1 0 3.214-3.214c-.446-.166-.855-.497-.925-.968a.979.979 0 0 1 .276-.837l1.61-1.611c.941-.941 2.468-.941 3.409 0l1.568 1.568a.98.98 0 0 1 .276.837c-.07.47-.48.802-.925.968a2.5 2.5 0 1 0 3.214 3.214c.166.446.497.855.968.925Z"/></svg>;
     const IconList = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>;
     const IconX = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
+    const IconStar = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>;
 
-    // --- 데이터 정의 (총 30문항으로 확장 및 혼합 배치) ---
+    // --- 데이터 정의 (상황극 기반 30문항으로 전면 개편) ---
     const QUESTIONS = [
-      { id: 1, text: "회의 시간에 누군가 지각하면 '시간 약속은 기본인데...' 라고 속으로 생각한다.", category: "CP" },
-      { id: 2, text: "팀원이 업무로 힘들어 보이면, 내 일을 조금 미루더라도 기꺼이 도와주고 싶다.", category: "NP" },
-      { id: 3, text: "문제를 해결할 때 직감이나 감정보다는 '팩트'와 '데이터'를 먼저 확인한다.", category: "A" },
-      { id: 4, text: "가끔 엉뚱하더라도 새롭고 기발한 아이디어를 던지는 것을 좋아한다.", category: "FC" },
-      { id: 5, text: "내 의견이 있더라도, 다수의 의견이 다르면 굳이 반대하지 않고 보통 따르는 편이다.", category: "AC" },
+      { id: 1, text: "첫 회의 시간, 10분이 지나도 다들 잡담만 하고 있으면 '우리 일단 역할 분담부터 명확히 할까요?'라고 분위기를 잡는다.", category: "CP" },
+      { id: 2, text: "회의 중 유독 조용하고 소외된 팀원이 있으면, 일부러 'ㅇㅇ님은 어떻게 생각하세요?'라며 발언권을 챙겨준다.", category: "NP" },
+      { id: 3, text: "브레인스토밍 중 뜬구름 잡는 소리가 길어지면, 속으로 '그래서 구체적인 실행 방안이나 데이터가 있나?'라고 생각한다.", category: "A" },
+      { id: 4, text: "주제와 조금 벗어나더라도, 갑자기 떠오른 재밌고 기발한 생각을 필터링 없이 일단 던지고 본다.", category: "FC" },
+      { id: 5, text: "A안과 B안을 두고 팀원들의 의견이 팽팽할 때, 나는 보통 다수의 의견이 향하는 쪽으로 굳이 반대 없이 동의한다.", category: "AC" },
       
-      { id: 6, text: "팀 프로젝트의 규칙, R&R(역할), 기한이 명확하지 않으면 큰 스트레스를 받는다.", category: "CP" },
-      { id: 7, text: "회의 때 의견을 내지 못하고 조용한 팀원에게 'ㅇㅇ님 생각은 어때요?'라고 자주 묻는다.", category: "NP" },
-      { id: 8, text: "잡담으로 회의가 길어지면, 빨리 요점을 정리해서 결론을 내고 싶어 안달이 난다.", category: "A" },
-      { id: 9, text: "딱딱한 회의실보다는 농담이 오가는 자유로운 분위기에서 아이디어가 훨씬 잘 나온다.", category: "FC" },
-      { id: 10, text: "팀원과 얼굴 붉히며 갈등을 겪느니, 차라리 내가 조금 손해 보더라도 참는 게 편하다.", category: "AC" },
+      { id: 6, text: "팀원이 마감일을 하루 어겼다. 사정은 이해하지만, '다음부터는 기한을 꼭 지켜주세요'라고 단호하게 짚고 넘어간다.", category: "CP" },
+      { id: 7, text: "팀원이 개인적인 일로 힘들어 보이면, 내 일을 미뤄서라도 다가가 밥이나 커피를 사주며 이야기를 들어준다.", category: "NP" },
+      { id: 8, text: "어떤 중요한 결정을 내려야 할 때, 직감에 의존하기보다 장단점과 기대효과를 표로 리스트업해서 비교해야 직성이 풀린다.", category: "A" },
+      { id: 9, text: "남들이 다 하는 뻔하고 안전한 방식보다는, 조금 리스크가 있더라도 새롭고 독창적인 방식을 시도해보고 싶다.", category: "FC" },
+      { id: 10, text: "내 의견이 맞다고 생각하더라도, 팀장이나 목소리 큰 다수가 다른 방향을 강하게 밀어붙이면 결국 수긍하고 만다.", category: "AC" },
 
-      { id: 11, text: "정해진 규칙이나 프로세스를 무시하고 자기 맘대로 일하는 사람을 보면 화가 난다.", category: "CP" },
-      { id: 12, text: "팀 분위기가 가라앉아 있으면 내가 분위기를 띄우거나 간식을 사오곤 한다.", category: "NP" },
-      { id: 13, text: "어떤 주장을 할 때, 객관적인 근거나 레퍼런스가 없으면 전혀 설득력이 없다고 생각한다.", category: "A" },
-      { id: 14, text: "새로운 툴이나 방식을 시도해 보는 것을 즐기며, 반복되는 단순 작업은 금방 지루해한다.", category: "FC" },
-      { id: 15, text: "내 의견이 맞다고 생각하더라도, 팀장이나 다수가 강하게 밀어붙이면 결국 수긍한다.", category: "AC" },
+      { id: 11, text: "프로젝트 문서의 글꼴 크기나 줄맞춤이 묘하게 어긋나 있으면, 내용이 아무리 좋아도 나도 모르게 다 수정해버리고 싶어진다.", category: "CP" },
+      { id: 12, text: "팀 분위기가 무겁거나 정적이 흐르면, 내가 먼저 실없는 농담이나 칭찬을 던져 분위기를 띄우려 노력한다.", category: "NP" },
+      { id: 13, text: "회의록이나 정리된 문서 없이 말로만 '이렇게 저렇게 합시다'라고 대충 업무가 넘어오면 매우 불안하고 답답하다.", category: "A" },
+      { id: 14, text: "딱딱하고 각 잡힌 회의실보다는, 푹신한 소파나 카페 같은 자유로운 분위기에서 아이디어가 훨씬 잘 나온다.", category: "FC" },
+      { id: 15, text: "팀원과 얼굴 붉히며 갈등을 겪느니, 차라리 내가 조금 손해 보거나 궂은일을 도맡아 하면서 참는 게 편하다.", category: "AC" },
 
-      { id: 16, text: "팀원들의 결과물 퀄리티가 내 기준에 미치지 못하면 어떻게든 피드백을 해서 고치게 만든다.", category: "CP" },
-      { id: 17, text: "동료가 실수를 해도 질책하기보다는 '그럴 수 있지, 다음에 잘하면 돼'라고 위로하는 편이다.", category: "NP" },
-      { id: 18, text: "감정적인 호소나 열정보다는, 논리적인 인과관계가 명확한 설명에 마음이 움직인다.", category: "A" },
-      { id: 19, text: "남들이 생각하지 못한 독특한 시각으로 문제에 접근한다는 이야기를 종종 듣는다.", category: "FC" },
-      { id: 20, text: "회의 중 누군가와 의견이 강하게 충돌할 것 같으면, 말을 아끼고 상황을 지켜보는 편이다.", category: "AC" },
+      { id: 16, text: "누군가 '적당히 대충 하죠'라고 말하면 속으로 '대충 할 거면 뭐하러 해?'라며 반발심이 확 든다.", category: "CP" },
+      { id: 17, text: "동료가 치명적인 실수를 했을 때, 화를 내기보다 '그럴 수 있죠, 같이 수습해봐요'라며 먼저 다독이는 편이다.", category: "NP" },
+      { id: 18, text: "감정적인 갈등이 생겼을 때, 잘잘못을 따지기보다 '왜 이런 문제가 발생했는지' 근본적인 인과관계를 먼저 분석하려 든다.", category: "A" },
+      { id: 19, text: "단순 반복적인 문서 작업이나 데이터 복붙(정리) 업무를 맡으면 10분 만에 좀이 쑤시고 급격히 지루해진다.", category: "FC" },
+      { id: 20, text: "누군가 나에게 서운한 소리나 뾰족한 피드백을 하면, 겉으론 웃어넘겨도 집에 가서 잠들기 전까지 그 생각을 한다.", category: "AC" },
 
-      { id: 21, text: "프로젝트 문서의 폰트 크기나 줄맞춤이 어긋난 것을 보면 나도 모르게 거슬린다.", category: "CP" },
-      { id: 22, text: "새로 합류한 팀원이 적응을 못 하는 것 같으면 먼저 다가가 밥이나 커피를 사준다.", category: "NP" },
-      { id: 23, text: "회의록이나 정리된 문서 없이 말로만 진행되는 업무 지시는 매우 불안하고 싫다.", category: "A" },
-      { id: 24, text: "회의 중 갑자기 좋은 아이디어가 떠오르면 남의 말이 끝나기 전에 끼어들어 말할 때가 있다.", category: "FC" },
-      { id: 25, text: "불만이 있어도 팀의 분위기를 망칠까 봐 혼자 삭히고 둥글게 넘어가는 경우가 꽤 있다.", category: "AC" },
+      { id: 21, text: "팀 리더를 맡게 되면, 노션이나 엑셀로 전체 일정표와 체크리스트부터 완벽하게 세팅해야 마음이 편하다.", category: "CP" },
+      { id: 22, text: "프로젝트의 성공(성과)도 중요하지만, 그보다 팀원들과 다치지 않고 좋은 추억을 남기는 게 더 중요하다고 느낀다.", category: "NP" },
+      { id: 23, text: "누군가 재미있는 농담을 섞어가며 길게 보고하면, 속으로 '그래서 결론 3줄 요약이 뭔데?'라는 생각이 먼저 든다.", category: "A" },
+      { id: 24, text: "팀원들과 가끔은 빡빡한 계획 없이 발길 닿는 대로 즉흥적인 회식이나 놀거리를 즐기는 것을 매우 좋아한다.", category: "FC" },
+      { id: 25, text: "회의 중 누군가와 의견이 강하게 충돌할 것 같으면, 일단 말을 아끼고 상황이 진정될 때까지 지켜보는 편이다.", category: "AC" },
 
-      { id: 26, text: "누군가 농담을 길게 섞어가며 보고하면 '그래서 결론이 뭔데?' 라는 생각이 든다.", category: "CP" },
-      { id: 27, text: "누군가 칭찬받거나 성과를 내면 내 일처럼 진심으로 기쁘고 박수를 쳐준다.", category: "NP" },
-      { id: 28, text: "어떤 결정을 내릴 때 직감에 의존하기보단, 장단점을 리스트업해서 철저히 비교해 본다.", category: "A" },
-      { id: 29, text: "가끔은 목적지나 빡빡한 계획 없이 발길 닿는 대로 팀원들과 회식을 가거나 노는 게 재밌다.", category: "FC" },
-      { id: 30, text: "누군가 나에게 서운한 소리를 하면 겉으론 웃어넘겨도 하루 종일 그 생각에 빠지곤 한다.", category: "AC" }
+      { id: 26, text: "결과물의 퀄리티가 내 기준에 못 미치면, 차라리 내가 밤을 새워서라도 완벽하게 고쳐놔야 직성이 풀린다.", category: "CP" },
+      { id: 27, text: "누군가 칭찬을 받거나 좋은 아이디어를 내면, 내 일처럼 찐텐으로 기뻐하며 폭풍 리액션을 쏟아낸다.", category: "NP" },
+      { id: 28, text: "누군가 감정에 호소하며 의견을 낼 때, 속으로는 '그래서 그걸 증명할 객관적인 레퍼런스가 있나?'라고 생각한다.", category: "A" },
+      { id: 29, text: "남들이 생각하지 못한 엉뚱한 시각으로 문제에 접근해서 '오, 그런 방법이?'라는 소리를 종종 듣는다.", category: "FC" },
+      { id: 30, text: "불만이 있어도 팀의 분위기를 망칠까 봐 혼자 삭히고 둥글게 둥글게 넘어간 경험이 꽤 많다.", category: "AC" }
     ];
 
     const ANSWERS = [
@@ -194,10 +196,21 @@
       const [isCapturing, setIsCapturing] = useState(false);
       const [isTransitioning, setIsTransitioning] = useState(false);
       
-      // 새로 추가된 상태: 이름, 답변 기록, 답변 돌아보기 모달 표시 여부
       const [name, setName] = useState('');
       const [userAnswers, setUserAnswers] = useState([]);
       const [showReview, setShowReview] = useState(false);
+
+      // 폭죽 애니메이션 효과
+      useEffect(() => {
+        if (step === 'result' && window.confetti) {
+          window.confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#6366f1', '#ec4899', '#3b82f6', '#eab308', '#22c55e']
+          });
+        }
+      }, [step]);
 
       const handleStart = () => {
         setStep('test');
@@ -206,18 +219,17 @@
         setUserAnswers([]);
         setShowReview(false);
         setIsTransitioning(false);
+        setName(''); // 다시하기 시 이전 캡쳐 잔상 방지를 위해 이름도 완전 초기화
       };
 
       const handleAnswer = (answerObj) => {
-        if (isTransitioning) return; // 중복 클릭 방지
+        if (isTransitioning) return;
         setIsTransitioning(true);
 
         const category = QUESTIONS[currentQuestion].category;
         
-        // 카테고리 점수 합산
         setScores(prev => ({ ...prev, [category]: prev[category] + answerObj.score }));
         
-        // 사용자가 선택한 답변 기록 저장
         setUserAnswers(prev => [...prev, {
           question: QUESTIONS[currentQuestion].text,
           answerText: answerObj.text
@@ -236,16 +248,14 @@
         }
       };
 
-      const getPrimaryTrait = () => {
-        let maxTrait = 'CP';
-        let maxScore = -1;
-        for (const [trait, score] of Object.entries(scores)) {
-          if (score > maxScore) {
-            maxScore = score;
-            maxTrait = trait;
-          }
-        }
-        return maxTrait;
+      // 1위, 2위 성향 모두 추출하도록 수정
+      const getRankedTraits = () => {
+        // 객체를 배열로 변환 후 점수순 내림차순 정렬
+        const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+        return {
+          primary: sorted[0][0],   // 1위 성향 (본캐)
+          secondary: sorted[1][0]  // 2위 성향 (부캐)
+        };
       };
 
       const handleCapture = async () => {
@@ -258,12 +268,15 @@
         if (captureArea) {
           setIsCapturing(true);
           try {
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // 이전 상태가 캡쳐되는 현상을 막기 위해 딜레이 시간을 500ms로 늘리고 옵션 강화
+            await new Promise(resolve => setTimeout(resolve, 500));
             
             const canvas = await window.html2canvas(captureArea, {
               scale: 2, 
               backgroundColor: '#f3f4f6', 
               windowWidth: captureArea.scrollWidth,
+              useCORS: true, // 외부 리소스 로드 최적화
+              logging: false
             });
             
             const image = canvas.toDataURL("image/png");
@@ -292,7 +305,6 @@
             총 30개의 질문으로 나의 팀 내 포지션과 소통 꿀팁, 그리고 케미를 알아봅니다.
           </p>
           
-          {/* 이름 입력 영역 추가 */}
           <div className="w-full max-w-xs mt-2 mb-2">
             <input
               type="text"
@@ -322,7 +334,6 @@
         return (
           <div className="w-full max-w-md animate-fade-in flex flex-col h-full justify-between py-2">
             <div className="space-y-6">
-              {/* Progress Bar */}
               <div className="space-y-2 px-2">
                 <div className="flex justify-between text-sm font-bold text-indigo-500">
                   <span>진행도</span>
@@ -336,10 +347,9 @@
                 </div>
               </div>
 
-              {/* Question Card */}
               <div className="bg-white rounded-3xl shadow-md border border-indigo-50 p-8 min-h-[180px] flex items-center justify-center text-center relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 opacity-20"></div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 break-keep leading-relaxed relative z-10">
+                <h2 className="text-xl font-bold text-gray-800 break-keep leading-relaxed relative z-10">
                   <span className="text-indigo-300 text-4xl absolute -top-4 -left-4 opacity-50">"</span>
                   {question.text}
                   <span className="text-indigo-300 text-4xl absolute -bottom-6 -right-4 opacity-50">"</span>
@@ -347,12 +357,11 @@
               </div>
             </div>
 
-            {/* Answers */}
             <div className="space-y-3 mt-8">
               {ANSWERS.map((answer, idx) => (
                 <button
                   key={idx}
-                  onClick={() => handleAnswer(answer)} /* 파라미터를 answer 객체 전체로 변경 */
+                  onClick={() => handleAnswer(answer)}
                   disabled={isTransitioning}
                   className={`w-full font-bold py-4 px-6 rounded-2xl transition-all duration-200 flex justify-center text-lg active:scale-[0.98] shadow-sm ${
                     isTransitioning 
@@ -369,14 +378,14 @@
       };
 
       const renderResult = () => {
-        const primary = getPrimaryTrait();
+        const { primary, secondary } = getRankedTraits();
         const resultData = RESULTS[primary];
+        const secondaryData = RESULTS[secondary]; // 부캐(2순위) 데이터
+        
         const primaryScore = scores[primary];
+        const secondaryScore = scores[secondary];
         
-        // 30점 만점 중 28점 이상 획득 시에만 밸런스 붕괴(일침) 경고 발동
         const isExtreme = primaryScore >= 28; 
-        
-        // 입력된 이름 처리 (없으면 '당신'으로 표기)
         const displayName = name.trim() ? `${name.trim()}님` : '당신';
 
         return (
@@ -388,14 +397,13 @@
                 {displayName}의 팀 프로젝트 캐릭터는
               </h2>
               
-              {/* 가로 2단 그리드 레이아웃 */}
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 {/* 좌측 패널: 캐릭터 핵심 정보 */}
                 <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col justify-between">
                   <div>
                     <div className="flex justify-center mb-6">
-                      <div className={`p-6 rounded-3xl ${resultData.color} bg-opacity-10 shadow-inner`}>
+                      <div className={`p-6 rounded-3xl ${resultData.color} bg-opacity-10 shadow-inner relative`}>
                         {resultData.icon}
                       </div>
                     </div>
@@ -403,7 +411,6 @@
                       {resultData.title}
                     </h1>
 
-                    {/* 말버릇 코너 */}
                     <div className="flex justify-center mb-6">
                       <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-100 px-5 py-2.5 rounded-full">
                         <IconMessageCircle className="w-4 h-4 text-gray-500" />
@@ -411,9 +418,15 @@
                       </div>
                     </div>
 
-                    {/* PBL 추천 역할 */}
                     <div className="bg-indigo-50 text-indigo-900 px-5 py-4 rounded-2xl mb-5 border border-indigo-100 text-sm font-bold text-center">
                       🎯 추천 역할 : <span className="text-indigo-600">{resultData.pblRole}</span>
+                    </div>
+
+                    {/* ✨ 내 안의 부캐 (2순위) 표시 영역 - 새롭게 추가됨 */}
+                    <div className="flex items-center justify-center gap-2 mb-6 text-[13px] font-bold text-gray-600">
+                      <span className="text-yellow-500"><IconStar className="w-4 h-4" /></span>
+                      내 안의 부캐: <span className={`px-2 py-0.5 rounded text-white ${secondaryData.color}`}>{secondaryData.title.split(',')[1]}</span>
+                      {primaryScore - secondaryScore <= 2 && <span className="text-indigo-500 text-[11px] bg-indigo-50 px-2 rounded-full ml-1">비등비등!</span>}
                     </div>
                   </div>
 
@@ -425,7 +438,6 @@
                       <span className="font-bold">⚠️ 아쉬울 수 있는 점:</span> {resultData.caution}
                     </div>
 
-                    {/* 밸런스 붕괴 경고 (극단적 점수일 때만 노출) */}
                     {isExtreme && (
                       <div className="mt-4 bg-gray-900 text-gray-100 text-[13.5px] leading-relaxed break-keep text-left p-5 rounded-2xl border-l-4 border-red-500 shadow-lg relative overflow-hidden">
                         <div className="absolute top-0 right-0 -mt-2 -mr-2 text-red-500 opacity-20 transform rotate-12">
@@ -438,12 +450,11 @@
                       </div>
                     )}
                   </div>
-                </div> {/* 좌측 패널 닫기 태그 추가 */}
+                </div>
 
                 {/* 우측 패널: 궁합, 그래프, 팁 */}
                 <div className="flex flex-col gap-6">
                   
-                  {/* 궁합 영역 */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-white border-b-4 border-blue-400 rounded-3xl p-5 text-center shadow-sm">
                       <div className="flex justify-center mb-2"><IconZap className="w-6 h-6 text-blue-500" /></div>
@@ -457,7 +468,6 @@
                     </div>
                   </div>
 
-                  {/* 미니 에고그램 그래프 */}
                   <div className="bg-white rounded-3xl p-6 shadow-sm">
                     <h3 className="text-[14px] font-extrabold text-gray-800 mb-5 text-center">나의 에고그램 밸런스</h3>
                     <div className="space-y-3.5">
@@ -483,7 +493,6 @@
                     </div>
                   </div>
 
-                  {/* 아이스브레이킹 팁 */}
                   <div className="bg-white rounded-3xl p-6 text-[14px] flex gap-4 shadow-sm border-l-[6px] border-indigo-500 h-full">
                     <IconShieldAlert className="w-7 h-7 flex-shrink-0 text-indigo-500 mt-1" />
                     <div className="w-full">
@@ -503,7 +512,7 @@
             </div>
             {/* --- 캡쳐 영역 끝 --- */}
 
-            {/* 액션 버튼 (답변 돌아보기 추가됨) */}
+            {/* 액션 버튼 */}
             <div className="flex w-full max-w-xl gap-2 sm:gap-3 mt-6 px-2">
               <button 
                 onClick={handleCapture}
@@ -546,12 +555,10 @@
             <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-48 h-48 rounded-full bg-pink-50 blur-3xl -z-10 pointer-events-none"></div>
           </div>
 
-          {/* 답변 돌아보기 모달 (캡쳐 영역과 완전히 분리되어 화면 최상단에 렌더링됨) */}
+          {/* 답변 돌아보기 모달 */}
           {showReview && (
             <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm">
               <div className="bg-white rounded-[2rem] w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl">
-                
-                {/* 모달 헤더 */}
                 <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                   <div>
                     <h3 className="text-xl font-extrabold text-gray-900">내 답변 돌아보기</h3>
@@ -565,17 +572,16 @@
                   </button>
                 </div>
                 
-                {/* 모달 내용 (스크롤 영역) */}
                 <div className="overflow-y-auto p-6 space-y-4 bg-gray-50 rounded-b-[2rem]">
                   {userAnswers.map((item, i) => (
                     <div key={i} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
                       <div className="flex gap-3 items-start">
                         <span className="text-indigo-500 font-extrabold text-sm mt-0.5">Q{i + 1}.</span>
                         <div>
-                          <p className="text-[15px] font-semibold text-gray-800 break-keep leading-relaxed mb-2">
+                          <p className="text-[14px] font-semibold text-gray-800 break-keep leading-relaxed mb-3">
                             {item.question}
                           </p>
-                          <div className="inline-block bg-indigo-50 text-indigo-700 text-[13px] font-bold px-3 py-1.5 rounded-lg">
+                          <div className="inline-block bg-indigo-50 text-indigo-700 text-[13px] font-bold px-3 py-1.5 rounded-lg border border-indigo-100">
                             {item.answerText}
                           </div>
                         </div>
@@ -583,7 +589,6 @@
                     </div>
                   ))}
                 </div>
-
               </div>
             </div>
           )}
@@ -591,7 +596,6 @@
       );
     }
 
-    // React 렌더링
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
